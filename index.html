@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi niña hermosa 💜</title>
+    <style>
+        :root {
+            --kuromi-negro: #1a1a1a;
+            --kuromi-morado: #6a0dad;
+            --kuromi-rosa: #ff66cc;
+            --blanco: #ffffff;
+        }
+
+        body {
+            background-color: var(--kuromi-negro);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            touch-action: manipulation; /* Optimiza toques en móvil */
+        }
+
+        /* Lluvia de Tulipanes Morados */
+        .tulipan {
+            position: absolute;
+            top: -50px;
+            font-size: 25px;
+            z-index: 1;
+            animation: caida linear infinite;
+            filter: hue-rotate(260deg); /* Los vuelve morados */
+        }
+
+        @keyframes caida {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        .container {
+            background: rgba(44, 44, 44, 0.9);
+            border: 3px solid var(--kuromi-morado);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 0 20px var(--kuromi-morado);
+            text-align: center;
+            z-index: 10;
+            width: 85%;
+            max-width: 350px;
+            position: relative;
+        }
+
+        h1 {
+            color: var(--blanco);
+            font-size: 22px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px var(--kuromi-morado);
+        }
+
+        .kuromi-img {
+            width: 350px;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column; /* En móvil es mejor uno sobre otro o con espacio */
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            position: relative;
+            height: 150px; /* Espacio para que el botón No se mueva */
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 50px;
+            transition: all 0.2s ease;
+        }
+
+        #siBtn {
+            background-color: var(--kuromi-rosa);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 102, 204, 0.4);
+            z-index: 11;
+        }
+
+        #noBtn {
+            background-color: #444;
+            color: white;
+            position: absolute; /* Para que se mueva por el contenedor */
+            top: 80px;
+            z-index: 10;
+        }
+
+        #pantallaFinal {
+            display: none;
+        }
+
+        p { color: white; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <div id="lluvia"></div>
+
+    <div class="container" id="principal">
+        <!-- GIF de Kuromi (He puesto uno de Giphy para que cargue siempre) -->
+        <img src="assets/maxresdefault.jpg" class="kuromi-img" alt="Kuromi">
+        <h1>¿Quieres ser mi San Valentín, mi princesa? 💜🌷</h1>
+        
+        <div class="buttons">
+            <button id="siBtn">¡SÍ!</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <div class="container" id="pantallaFinal">
+        <img src="assets/hq720.jpg" style="width: 100%;" alt="Kuromi Love">
+        <h1>¡SABÍA QUE DIRÍAS QUE SÍ! 😍</h1>
+        <p>Eres lo mejor que me ha pasado. <br> ¡Te amo mucho! 💜🌷✨</p>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const siBtn = document.getElementById('siBtn');
+        const principal = document.getElementById('principal');
+        const pantallaFinal = document.getElementById('pantallaFinal');
+        let escalaSi = 1;
+        let intentosNo = 0;
+
+        // Lluvia de tulipanes
+        function crearTulipan() {
+            const tulipan = document.createElement('div');
+            tulipan.classList.add('tulipan');
+            tulipan.innerText = '🌷';
+            tulipan.style.left = Math.random() * 100 + "vw";
+            tulipan.style.animationDuration = Math.random() * 3 + 2 + "s";
+            document.getElementById('lluvia').appendChild(tulipan);
+            setTimeout(() => tulipan.remove(), 5000);
+        }
+        setInterval(crearTulipan, 400);
+
+        // Función para mover el botón NO al tocarlo (Mobile friendly)
+        function moverNo() {
+            // Mover a una posición aleatoria dentro del área visible
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
+            noBtn.style.position = "fixed";
+            noBtn.style.left = x + "px";
+            noBtn.style.top = y + "px";
+
+            // Hacer que el botón SÍ crezca
+            escalaSi += 0.3;
+            siBtn.style.transform = `scale(${escalaSi})`;
+            
+            // Cambiar texto del botón NO
+            const frases = ["¿Segura?", "Piénsalo bien...", "¡Oye! 😤", "Te vas a arrepentir", "Di que síii"];
+            noBtn.innerText = frases[intentosNo % frases.length];
+            intentosNo++;
+        }
+
+        // Eventos para móvil y PC
+        noBtn.addEventListener('click', moverNo);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Evita clics fantasma
+            moverNo();
+        });
+
+        // Al presionar SÍ
+        siBtn.addEventListener('click', () => {
+            principal.style.display = 'none';
+            pantallaFinal.style.display = 'block';
+            document.body.style.backgroundColor = "#4b0082"; // Fondo más vibrante
+            setInterval(crearTulipan, 100); // Lluvia masiva
+        });
+    </script>
+</body>
+</html>
